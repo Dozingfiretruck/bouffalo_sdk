@@ -63,7 +63,7 @@
 		<buildTargets>
 			<target name="make" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
-				<buildArguments>build CHIP=bl616 BOARD=bl616dk -C</buildArguments>
+				<buildArguments>ninja CHIP=bl616 BOARD=bl616dk -C</buildArguments>
 				<buildTarget>examples/helloworld</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>false</useDefaultCommand>
