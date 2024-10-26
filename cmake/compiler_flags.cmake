@@ -36,7 +36,7 @@ sdk_add_compile_options(
 # $<$<COMPILE_LANGUAGE:C>:-Wno-override-init>
 # $<$<COMPILE_LANGUAGE:C>:-Wno-enum-conversion>
 # $<$<COMPILE_LANGUAGE:C>:-Wno-cast-function-type>
-$<$<COMPILE_LANGUAGE:C>:-std=gnu99>
+$<$<COMPILE_LANGUAGE:C>:-std=gnu11>
 $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>
 $<$<COMPILE_LANGUAGE:CXX>:-nostdlib>
 $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
