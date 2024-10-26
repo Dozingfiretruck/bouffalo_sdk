@@ -832,9 +832,9 @@ static void summary(void) {
     }
 
     char perm_buf[64];
-    snprintf(perm_buf, sizeof(perm_buf),  "%zu/%zu", perms.filtered, perms.total);
+    sprintf(perm_buf, "%zu/%zu", perms.filtered, perms.total);
     char flag_buf[64];
-    snprintf(flag_buf, sizeof(flag_buf), "%s%s",
+    sprintf(flag_buf, "%s%s",
             (flags & TEST_REENTRANT) ? "r" : "",
             (!flags) ? "-" : "");
     printf("%-23s  %7s %7zu %7zu %11s\n",
@@ -893,9 +893,9 @@ static void list_suites(void) {
             }
 
             char perm_buf[64];
-            snprintf(perm_buf, sizeof(perm_buf), "%zu/%zu", perms.filtered, perms.total);
+            sprintf(perm_buf, "%zu/%zu", perms.filtered, perms.total);
             char flag_buf[64];
-            snprintf(flag_buf, sizeof(flag_buf), "%s%s",
+            sprintf(flag_buf, "%s%s",
                     (test_suites[i].flags & TEST_REENTRANT) ? "r" : "",
                     (!test_suites[i].flags) ? "-" : "");
             printf("%-*s  %7s %7zu %11s\n",
@@ -948,9 +948,9 @@ static void list_cases(void) {
                         &perms);
 
                 char perm_buf[64];
-                snprintf(perm_buf, sizeof(perm_buf), "%zu/%zu", perms.filtered, perms.total);
+                sprintf(perm_buf, "%zu/%zu", perms.filtered, perms.total);
                 char flag_buf[64];
-                snprintf(flag_buf, sizeof(flag_buf), "%s%s",
+                sprintf(flag_buf, "%s%s",
                         (test_suites[i].cases[j].flags & TEST_REENTRANT)
                             ? "r" : "",
                         (!test_suites[i].cases[j].flags)
@@ -1346,6 +1346,8 @@ static void run_powerloss_none(
         .block_cycles       = BLOCK_CYCLES,
         .cache_size         = CACHE_SIZE,
         .lookahead_size     = LOOKAHEAD_SIZE,
+        .compact_thresh     = COMPACT_THRESH,
+        .inline_max         = INLINE_MAX,
     #ifdef LFS_MULTIVERSION
         .disk_version       = DISK_VERSION,
     #endif
@@ -1422,6 +1424,8 @@ static void run_powerloss_linear(
         .block_cycles       = BLOCK_CYCLES,
         .cache_size         = CACHE_SIZE,
         .lookahead_size     = LOOKAHEAD_SIZE,
+        .compact_thresh     = COMPACT_THRESH,
+        .inline_max         = INLINE_MAX,
     #ifdef LFS_MULTIVERSION
         .disk_version       = DISK_VERSION,
     #endif
@@ -1515,6 +1519,8 @@ static void run_powerloss_log(
         .block_cycles       = BLOCK_CYCLES,
         .cache_size         = CACHE_SIZE,
         .lookahead_size     = LOOKAHEAD_SIZE,
+        .compact_thresh     = COMPACT_THRESH,
+        .inline_max         = INLINE_MAX,
     #ifdef LFS_MULTIVERSION
         .disk_version       = DISK_VERSION,
     #endif
@@ -1606,6 +1612,8 @@ static void run_powerloss_cycles(
         .block_cycles       = BLOCK_CYCLES,
         .cache_size         = CACHE_SIZE,
         .lookahead_size     = LOOKAHEAD_SIZE,
+        .compact_thresh     = COMPACT_THRESH,
+        .inline_max         = INLINE_MAX,
     #ifdef LFS_MULTIVERSION
         .disk_version       = DISK_VERSION,
     #endif
@@ -1795,6 +1803,8 @@ static void run_powerloss_exhaustive(
         .block_cycles       = BLOCK_CYCLES,
         .cache_size         = CACHE_SIZE,
         .lookahead_size     = LOOKAHEAD_SIZE,
+        .compact_thresh     = COMPACT_THRESH,
+        .inline_max         = INLINE_MAX,
     #ifdef LFS_MULTIVERSION
         .disk_version       = DISK_VERSION,
     #endif

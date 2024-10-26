@@ -803,9 +803,9 @@ static void summary(void) {
     }
 
     char perm_buf[64];
-    snprintf(perm_buf, sizeof(perm_buf), "%zu/%zu", perms.filtered, perms.total);
+    sprintf(perm_buf, "%zu/%zu", perms.filtered, perms.total);
     char flag_buf[64];
-    snprintf(flag_buf, sizeof(flag_buf), "%s%s",
+    sprintf(flag_buf, "%s%s",
             (flags & BENCH_REENTRANT) ? "r" : "",
             (!flags) ? "-" : "");
     printf("%-23s  %7s %7zu %7zu %11s\n",
@@ -862,9 +862,9 @@ static void list_suites(void) {
             }
 
             char perm_buf[64];
-            snprintf(perm_buf, sizeof(perm_buf),  "%zu/%zu", perms.filtered, perms.total);
+            sprintf(perm_buf, "%zu/%zu", perms.filtered, perms.total);
             char flag_buf[64];
-            snprintf(flag_buf, sizeof(flag_buf), "%s%s",
+            sprintf(flag_buf, "%s%s",
                     (bench_suites[i].flags & BENCH_REENTRANT) ? "r" : "",
                     (!bench_suites[i].flags) ? "-" : "");
             printf("%-*s  %7s %7zu %11s\n",
@@ -915,9 +915,9 @@ static void list_cases(void) {
                         &perms);
 
                 char perm_buf[64];
-                snprintf(perm_buf, sizeof(perm_buf), "%zu/%zu", perms.filtered, perms.total);
+                sprintf(perm_buf, "%zu/%zu", perms.filtered, perms.total);
                 char flag_buf[64];
-                snprintf(flag_buf, sizeof(flag_buf), "%s%s",
+                sprintf(flag_buf, "%s%s",
                         (bench_suites[i].cases[j].flags & BENCH_REENTRANT)
                             ? "r" : "",
                         (!bench_suites[i].cases[j].flags)
@@ -1321,6 +1321,8 @@ void perm_run(
         .block_cycles       = BLOCK_CYCLES,
         .cache_size         = CACHE_SIZE,
         .lookahead_size     = LOOKAHEAD_SIZE,
+        .compact_thresh     = COMPACT_THRESH,
+        .inline_max         = INLINE_MAX,
     };
 
     struct lfs_emubd_config bdcfg = {

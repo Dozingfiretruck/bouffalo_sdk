@@ -53,7 +53,7 @@ extern "C"
 #ifndef LFS_TRACE
 #ifdef LFS_YES_TRACE
 #define LFS_TRACE_(fmt, ...) \
-    printf("%s:%d:trace: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
+    printf("%s:%d:trace: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
 #define LFS_TRACE(...) LFS_TRACE_(__VA_ARGS__, "")
 #else
 #define LFS_TRACE(...)
@@ -63,7 +63,7 @@ extern "C"
 #ifndef LFS_DEBUG
 #ifndef LFS_NO_DEBUG
 #define LFS_DEBUG_(fmt, ...) \
-    printf("%s:%d:debug: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
+    printf("%s:%d:debug: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
 #define LFS_DEBUG(...) LFS_DEBUG_(__VA_ARGS__, "")
 #else
 #define LFS_DEBUG(...)
@@ -73,7 +73,7 @@ extern "C"
 #ifndef LFS_WARN
 #ifndef LFS_NO_WARN
 #define LFS_WARN_(fmt, ...) \
-    printf("%s:%d:warn: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
+    printf("%s:%d:warn: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
 #define LFS_WARN(...) LFS_WARN_(__VA_ARGS__, "")
 #else
 #define LFS_WARN(...)
@@ -83,7 +83,7 @@ extern "C"
 #ifndef LFS_ERROR
 #ifndef LFS_NO_ERROR
 #define LFS_ERROR_(fmt, ...) \
-    printf("%s:%d:error: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
+    printf("%s:%d:error: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
 #define LFS_ERROR(...) LFS_ERROR_(__VA_ARGS__, "")
 #else
 #define LFS_ERROR(...)
@@ -212,12 +212,22 @@ static inline uint32_t lfs_tobe32(uint32_t a) {
 }
 
 // Calculate CRC-32 with polynomial = 0x04c11db7
+#ifdef LFS_CRC
+uint32_t lfs_crc(uint32_t crc, const void *buffer, size_t size) {
+    return LFS_CRC(crc, buffer, size)
+}
+#else
 uint32_t lfs_crc(uint32_t crc, const void *buffer, size_t size);
+#endif
 
 // Allocate memory, only used if buffers are not provided to littlefs
-// Note, memory must be 64-bit aligned
+//
+// littlefs current has no alignment requirements, as it only allocates
+// byte-level buffers.
 static inline void *lfs_malloc(size_t size) {
-#ifndef LFS_NO_MALLOC
+#if defined(LFS_MALLOC)
+    return LFS_MALLOC(size);
+#elif !defined(LFS_NO_MALLOC)
     return malloc(size);
 #else
     (void)size;
@@ -227,7 +237,9 @@ static inline void *lfs_malloc(size_t size) {
 
 // Deallocate memory, only used if buffers are not provided to littlefs
 static inline void lfs_free(void *p) {
-#ifndef LFS_NO_MALLOC
+#if defined(LFS_FREE)
+    LFS_FREE(p);
+#elif !defined(LFS_NO_MALLOC)
     free(p);
 #else
     (void)p;
