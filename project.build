@@ -60,6 +60,7 @@ CONFIG_COREDUMP ?=y
 COMX ?=COM5
 BAUDRATE ?=2000000
 BOARD_DIR ?=
+JOBS ?=8
 
 #cmake definition config
 cmake_definition+= -DCROSS_COMPILE=${CROSS_COMPILE}
@@ -77,7 +78,7 @@ cmake_definition+= -DCONFIG_COREDUMP=$(CONFIG_COREDUMP)
 
 build:Makefile
 	$(CMAKE) -S . -B build -G $(cmake_generator) $(cmake_definition)
-	$(MAKE) -C build -j24
+	$(MAKE) -C build -j$(JOBS)
 	$(MAKE) -C build combine
 
 ninja:Makefile
