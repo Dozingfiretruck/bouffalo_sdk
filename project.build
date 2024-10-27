@@ -12,41 +12,34 @@ command_puncover = $(PUNCOVER_PROGRAM) \
 	--build_dir ./build --src_root ${BL_SDK_BASE} --port 5001
 
 ifeq ($(OS),Windows_NT)
-CMAKE = $(BL_SDK_BASE)/tools/cmake/bin/cmake.exe
+    ifeq ($(shell uname),MSYS)
+    cmake_generator = "MSYS Makefiles"
+    else ifeq ($(shell uname),Cygwin)
+    cmake_generator = "MinGW Makefiles"
+    else
+    cmake_generator = "Unix Makefiles"
+    endif
 BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand.exe
 PUNCOVER_PROGRAM = puncover_riscv.exe
-cmake_generator = "MinGW Makefiles"
-
 else
 	ifeq ($(shell uname),Darwin)
-	CMAKE = cmake # use user cmake
 	BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-macos
-	PUNCOVER_PROGRAM = puncover_riscv
-	cmake_generator = "Unix Makefiles"
 	else ifeq ($(shell uname),FreeBSD)
-	CMAKE = cmake # use user cmake
 	BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-freebsd
-	PUNCOVER_PROGRAM = puncover_riscv
-	cmake_generator = "Unix Makefiles"
 	else ifeq ($(shell arch),aarch64)
-	CMAKE = cmake # use user cmake
 	BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-arm
-	PUNCOVER_PROGRAM = puncover_riscv
-	cmake_generator = "Unix Makefiles"
 	else ifeq ($(patsubst %WSL2,WSL2,$(shell uname -r)), WSL2)
 	PS_PROGRAM = /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe
-	CMAKE = $(BL_SDK_BASE)/tools/cmake/bin/cmake
 	command_flash = $(PS_PROGRAM) make flash CHIP=$(CHIP) CPU_ID=$(CPU_ID) COMX=$(COMX) BAUDRATE=$(BAUDRATE)
 	command_efuse = $(PS_PROGRAM) make efuse CHIP=$(CHIP) CPU_ID=$(CPU_ID) COMX=$(COMX) BAUDRATE=$(BAUDRATE)
-	PUNCOVER_PROGRAM = puncover_riscv
-	cmake_generator = "Unix Makefiles"
 	else
-	CMAKE = $(BL_SDK_BASE)/tools/cmake/bin/cmake
 	BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-ubuntu
-	PUNCOVER_PROGRAM = puncover_riscv
-	cmake_generator = "Unix Makefiles"
 	endif
+PUNCOVER_PROGRAM = puncover_riscv
+cmake_generator = "Unix Makefiles"
 endif
+
+CMAKE = cmake # use user cmake
 
 # The command to remove a file.
 RM = $(CMAKE) -E remove_directory
