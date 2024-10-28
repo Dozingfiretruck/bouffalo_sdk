@@ -11,16 +11,15 @@ command_puncover = $(PUNCOVER_PROGRAM) \
 	--elf_file ./build/build_out/*.elf --map_file ./build/build_out/*.map \
 	--build_dir ./build --src_root ${BL_SDK_BASE} --port 5001
 
-ifeq ($(OS),Windows_NT)
-    ifeq ($(shell uname),MSYS)
-    cmake_generator = "MSYS Makefiles"
-    else ifeq ($(shell uname),Cygwin)
-    cmake_generator = "MinGW Makefiles"
-    else
-    cmake_generator = "Unix Makefiles"
-    endif
 BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand.exe
 PUNCOVER_PROGRAM = puncover_riscv.exe
+
+ifeq ($(OS),Windows_NT)
+cmake_generator = "MinGW Makefiles"
+else ifeq ($(shell uname),MSYS)
+cmake_generator = "MSYS Makefiles"
+else ifeq ($(shell uname),Cygwin)
+cmake_generator = "MinGW Makefiles"
 else
 	ifeq ($(shell uname),Darwin)
 	BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-macos
