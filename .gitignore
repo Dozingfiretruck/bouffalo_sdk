@@ -19,3 +19,5 @@ chiptest
 **/_build
 **/img_create_iot
 docs/zh/_static/**
+CMakeCache.txt
+CMakeFiles/
