@@ -235,6 +235,19 @@ SECTIONS
         KEEP(*(SORT_BY_NAME("._bt_l2cap_br_fixed_chan.static.*")))
         _bt_l2cap_br_fixed_chan_list_end = .;
 
+        _bt_conn_cb_list_start = .;
+        KEEP(*(SORT_BY_NAME("._bt_conn_cb.static.*")))
+        _bt_conn_cb_list_end = .;
+        _k_mem_slab_list_start = .;
+        KEEP(*(SORT_BY_NAME("._k_mem_slab.static.*")))
+        _k_mem_slab_list_end = .;
+
+        _net_buf_pool_list = .;
+        _net_buf_pool_list_start = .;
+        KEEP(*(SORT_BY_NAME("._net_buf_pool.static.*")))
+        _net_buf_pool_list_end = .;
+        PROVIDE( _net_buf_pool_list = _net_buf_pool_list_start);
+
         . = ALIGN(4);
         __bflog_tags_start__ = .;
         *(.bflog_tags_array)
