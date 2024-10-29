@@ -95,7 +95,7 @@ const uint8_t msc_ram_descriptor[] = {
     0x00
 };
 
-void usbd_event_handler(uint8_t event)
+void usbd_event_handler(uint8_t busid, uint8_t event)
 {
     switch (event) {
         case USBD_EVENT_RESET:
@@ -125,13 +125,13 @@ void usbd_event_handler(uint8_t event)
 
 static sd_card_t gSDCardInfo;
 
-void usbd_msc_get_cap(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
+void usbd_msc_get_cap(uint8_t busid, uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
     *block_num = gSDCardInfo.blockCount; //Pretend having so many buffer,not has actually.
     *block_size = gSDCardInfo.blockSize;
 }
 
-int usbd_msc_sector_read(uint32_t sector, uint8_t *buffer, uint32_t length)
+int usbd_msc_sector_read(uint8_t busid, uint8_t lun, uint32_t sector, uint8_t *buffer, uint32_t length)
 {
     if (SD_OK == SDH_ReadMultiBlocks(buffer, sector, gSDCardInfo.blockSize, length / gSDCardInfo.blockSize)) {
         return 0;
@@ -140,7 +140,7 @@ int usbd_msc_sector_read(uint32_t sector, uint8_t *buffer, uint32_t length)
     }
 }
 
-int usbd_msc_sector_write(uint32_t sector, uint8_t *buffer, uint32_t length)
+int usbd_msc_sector_write(uint8_t busid, uint8_t lun, uint32_t sector, uint8_t *buffer, uint32_t length)
 {
     status_t ret;
 
@@ -167,19 +167,19 @@ typedef struct
 
 BLOCK_TYPE mass_block[BLOCK_COUNT];
 
-void usbd_msc_get_cap(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
+void usbd_msc_get_cap(uint8_t busid, uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
     *block_num = 100000; //Pretend having so many buffer,not has actually.
     *block_size = BLOCK_SIZE;
 }
-int usbd_msc_sector_read(uint32_t sector, uint8_t *buffer, uint32_t length)
+int usbd_msc_sector_read(uint8_t busid, uint8_t lun, uint32_t sector, uint8_t *buffer, uint32_t length)
 {
     if (sector < 10)
         memcpy(buffer, mass_block[sector].BlockSpace, length);
     return 0;
 }
 
-int usbd_msc_sector_write(uint32_t sector, uint8_t *buffer, uint32_t length)
+int usbd_msc_sector_write(uint8_t busid, uint8_t lun, uint32_t sector, uint8_t *buffer, uint32_t length)
 {
     if (sector < 10)
         memcpy(mass_block[sector].BlockSpace, buffer, length);
@@ -189,7 +189,7 @@ int usbd_msc_sector_write(uint32_t sector, uint8_t *buffer, uint32_t length)
 
 struct usbd_interface intf0;
 
-void msc_ram_init(void)
+void msc_ram_init(uint8_t busid, uintptr_t reg_base)
 {
 #ifdef CONFIG_BSP_SDH_SDCARD
     board_sdh_gpio_init();
@@ -201,8 +201,8 @@ void msc_ram_init(void)
 
     printf("block_num:%d,block_size:%d\r\n", gSDCardInfo.blockCount, gSDCardInfo.blockSize);
 #endif
-    usbd_desc_register(msc_ram_descriptor);
-    usbd_add_interface(usbd_msc_init_intf(&intf0, MSC_OUT_EP, MSC_IN_EP));
+    usbd_desc_register(busid, msc_ram_descriptor);
+    usbd_add_interface(busid, usbd_msc_init_intf(busid, &intf0, MSC_OUT_EP, MSC_IN_EP));
 
-    usbd_initialize();
+    usbd_initialize(busid, reg_base, usbd_event_handler);
 }

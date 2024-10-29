@@ -19,7 +19,7 @@ static void usb_task(void *pvParameters)
     cdc_acm_init(0, 0x20072000);
     while (1) {
         cdc_acm_data_send_with_dtr_test();
-        bflb_mtimer_delay_ms(500);
+        vTaskDelay(500);
     }
 
     vTaskDelete(NULL);
