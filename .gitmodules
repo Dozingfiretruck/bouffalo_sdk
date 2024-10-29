@@ -6,3 +6,7 @@
 	path = components/fs/littlefs/littlefs
 	url = https://github.com/littlefs-project/littlefs
     tag = v2.9.3
+[submodule "components/utils/cjson"]
+	path = components/utils/cjson
+	url = https://github.com/DaveGamble/cJSON
+    tag = v1.7.18
