@@ -15,11 +15,13 @@ BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCo
 PUNCOVER_PROGRAM = puncover_riscv.exe
 
 ifeq ($(OS),Windows_NT)
-cmake_generator = "MinGW Makefiles"
-else ifeq ($(shell uname),MSYS)
-cmake_generator = "MSYS Makefiles"
-else ifeq ($(shell uname),Cygwin)
-cmake_generator = "MinGW Makefiles"
+    ifeq ($(shell uname),Cygwin)
+    cmake_generator = "MinGW Makefiles"
+    else ifeq ($(findstring MSYS, $(shell uname)),MSYS)
+    cmake_generator = "Unix Makefiles"
+    else
+    cmake_generator = "MinGW Makefiles"
+    endif
 else
 	ifeq ($(shell uname),Darwin)
 	BL_FLASH_PROGRAM = ${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-macos
