@@ -2,3 +2,7 @@
 	path = components/usb/cherryusb
 	url = https://github.com/cherry-embedded/CherryUSB
     tag = v1.4.1
+[submodule "components/fs/littlefs/littlefs"]
+	path = components/fs/littlefs/littlefs
+	url = https://github.com/littlefs-project/littlefs
+    tag = v2.9.3
