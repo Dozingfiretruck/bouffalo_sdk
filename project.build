@@ -53,6 +53,9 @@ COMX ?=COM5
 BAUDRATE ?=2000000
 BOARD_DIR ?=
 JOBS ?=8
+CHIP ?=bl616
+BOARD ?=bl616dk
+CROSS_COMPILE ?=riscv64-unknown-elf-
 
 #cmake definition config
 cmake_definition+= -DCROSS_COMPILE=${CROSS_COMPILE}
