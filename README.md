@@ -2,6 +2,20 @@
 
 [中文版](README_zh.md)
 
+# Description:
+
+​	**This branch is based on the official repository for additional update maintenance**
+
+## 主要修改:
+
+- Use the environment itself to cmake make ninja instead of project tools to avoid environmental conflicts
+- support `MSYS` build
+- C use`gnu11` build
+- C++ use`gnu++11` build
+- Compiling thread items can be independently controlled no more than modifying the SDK
+- littlefs update to 2.9.3
+- CherryUSB update to 1.4.1
+
 # Introduction
 
 **BouffaloSDK** is the IOT and MCU software development kit provided by the Bouffalo Lab Team, supports all the series of Bouffalo chips. Also it is the combination of **bl_mcu_sdk** and **bl_iot_sdk** 。
