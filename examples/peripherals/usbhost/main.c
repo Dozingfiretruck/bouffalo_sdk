@@ -19,7 +19,7 @@ int main(void)
     shell_init_with_task(uart0);
 
     printf("Starting usb host task...\r\n");
-    usbh_initialize();
+    usbh_initialize(0, 0x20072000);
     usbh_class_test();
     vTaskStartScheduler();
 
@@ -30,7 +30,7 @@ int main(void)
 int usbh_deinit(int argc, char **argv)
 {
     printf("usbh_deinit\r\n");
-    usbh_deinitialize();
+    usbh_deinitialize(0);
     return 0;
 }
 SHELL_CMD_EXPORT_ALIAS(usbh_deinit, usbh_deinit, usbh deinit);
@@ -38,7 +38,7 @@ SHELL_CMD_EXPORT_ALIAS(usbh_deinit, usbh_deinit, usbh deinit);
 int usbh_init(int argc, char **argv)
 {
     printf("usbh_init\r\n");
-    usbh_initialize();
+    usbh_initialize(0, 0x20072000);
     return 0;
 }
 
