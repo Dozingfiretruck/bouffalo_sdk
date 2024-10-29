@@ -2,6 +2,20 @@
 
 [English Version](README.md)
 
+# 说明:
+
+​	**本分支基于官方仓库进行更新维护**
+
+## 主要修改:
+
+- 使用环境自身cmake make ninja 而非项目tools下的避免环境冲突
+- 支持 MSYS 编译
+- c编译使用gnu11
+- c++ 使用 gnu++11
+- 编译线程项目可独立控制
+- littlefs 更新至 2.9.3
+- CherryUSB 更新至 1.4.1
+
 # 简介
 
 **BouffaloSDK** 是 Bouffalo Lab 提供的 IOT 和 MCU 软件开发包，支持博流智能所有系列芯片，也是 **bl_mcu_sdk** 和 **bl_iot_sdk** 的结合体。
