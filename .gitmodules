@@ -10,3 +10,7 @@
 	path = components/utils/cjson
 	url = https://github.com/DaveGamble/cJSON
     tag = v1.7.18
+[submodule "components/crypto/mbedtls/mbedtls"]
+	path = components/crypto/mbedtls/mbedtls
+	url = https://github.com/Mbed-TLS/mbedtls.git
+    tag = v2.28.9

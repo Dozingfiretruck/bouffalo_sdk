@@ -150,3 +150,8 @@ if (CONFIG_MBEDTLS_SELF_TEST)
 endif()
 
 sdk_library_add_sources(port/sec_mutex.c)
+
+sdk_add_include_directories(sm)
+sdk_library_add_sources(sm/sm2.c)
+sdk_library_add_sources(sm/sm3.c)
+sdk_library_add_sources(sm/sm4.c)
