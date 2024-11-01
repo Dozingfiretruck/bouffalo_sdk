@@ -14,3 +14,6 @@
 	path = components/crypto/mbedtls/mbedtls
 	url = https://github.com/Mbed-TLS/mbedtls.git
     tag = v2.28.9
+[submodule "components/os/freertos/posix"]
+	path = components/os/freertos/posix
+	url = https://github.com/FreeRTOS/Lab-Project-FreeRTOS-POSIX.git
