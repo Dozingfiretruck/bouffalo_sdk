@@ -170,6 +170,14 @@
 #define LCD_COLOR_DEPTH              ST7789V_SPI_COLOR_DEPTH
 #define _LCD_FUNC_DEFINE(_func, ...) st7789v_spi_##_func(__VA_ARGS__)
 
+#elif defined LCD_SPI_NV3030B
+
+#include "spi/nv3030b_spi.h"
+#define LCD_INTERFACE_TYPE           LCD_INTERFACE_SPI
+#define LCD_W                        NV3030B_SPI_W
+#define LCD_H                        NV3030B_SPI_H
+#define LCD_COLOR_DEPTH              NV3030B_SPI_COLOR_DEPTH
+#define _LCD_FUNC_DEFINE(_func, ...) nv3030b_spi_##_func(__VA_ARGS__)
 #else
 #error "Please select a screen type"
 #endif

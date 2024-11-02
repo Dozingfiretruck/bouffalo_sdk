@@ -417,6 +417,34 @@
     #define ST7789V_SPI_OFFSET_Y 0
 
 
+/* spi nv3030b config */
+#elif defined LCD_SPI_NV3030B
+
+    /* Selecting interface type, more configuration of peripherals comes later
+        1: SPI peripheral, supported functions: spi-4wire,
+    */
+    #define LCD_SPI_INTERFACE_TYPE 1
+
+    /* Selecting pixel format
+        1: rgb565
+    */
+    #define NV3030B_SPI_PIXEL_FORMAT 1
+
+    /* enable the lcd reset function
+        0: Does not care about lcd hard reset
+        1: use gpio to reset the lcd
+    */
+    #define LCD_RESET_EN 1
+
+    /* LCD width and height */
+    #define NV3030B_SPI_W 240
+    #define NV3030B_SPI_H 280
+
+    /* The offset of the area can be displayed */
+    #define NV3030B_SPI_OFFSET_X 0
+    #define NV3030B_SPI_OFFSET_Y 0
+
+
 /* spi st7796 config */
 #elif defined LCD_SPI_ST7796
 

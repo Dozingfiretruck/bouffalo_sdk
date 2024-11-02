@@ -40,6 +40,7 @@ target_sources(app PRIVATE lcd/spi/ili9341_spi.c)
 target_sources(app PRIVATE lcd/spi/ili9488_spi.c)
 target_sources(app PRIVATE lcd/spi/st7796_spi.c)
 target_sources(app PRIVATE lcd/spi/st7789v_spi.c)
+target_sources(app PRIVATE lcd/spi/nv3030b_spi.c)
 
 sdk_add_include_directories(lcd)
 endif()
