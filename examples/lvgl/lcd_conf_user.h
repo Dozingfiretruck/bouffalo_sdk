@@ -25,8 +25,9 @@
     LCD_SPI_ILI9341
     LCD_SPI_ST7796
     LCD_SPI_ST7789V
+    LCD_SPI_NV3030B
 */
-#define LCD_SPI_ILI9341
+#define LCD_SPI_NV3030B
 
 /* dbi ili9488 config */
 #if defined LCD_DBI_ILI9488
@@ -396,11 +397,38 @@
 
     /* LCD width and height */
     #define ST7789V_SPI_W 320
-    #define ST7789V_SPI_H 480
+    #define ST7789V_SPI_H 240
 
     /* The offset of the area can be displayed */
     #define ST7789V_SPI_OFFSET_X 0
     #define ST7789V_SPI_OFFSET_Y 0
+
+#elif defined LCD_SPI_NV3030B
+
+    /* Selecting interface type, more configuration of peripherals comes later
+        1: SPI peripheral, supported functions: spi-4wire,
+    */
+    #define LCD_SPI_INTERFACE_TYPE 1
+
+    /* Selecting pixel format
+        1: rgb565
+    */
+    #define NV3030B_SPI_PIXEL_FORMAT 1
+
+    /* enable the lcd reset function
+        0: Does not care about lcd hard reset
+        1: use gpio to reset the lcd
+    */
+    #define LCD_RESET_EN 1
+
+    /* LCD width and height */
+    #define NV3030B_SPI_W 240
+    #define NV3030B_SPI_H 280
+
+    /* The offset of the area can be displayed */
+    #define NV3030B_SPI_OFFSET_X 20
+    #define NV3030B_SPI_OFFSET_Y 0
+
 
 /* spi st7796 config */
 #elif defined LCD_SPI_ST7796
@@ -507,11 +535,11 @@
     #define LCD_SPI_HARD_4_PIXEL_CNT_MAX (800 * 640)
 
     /* spi pin, hardware controlled */
-    #define LCD_SPI_HARD_4_PIN_CLK   GPIO_PIN_13
-    #define LCD_SPI_HARD_4_PIN_DAT   GPIO_PIN_15
+    #define LCD_SPI_HARD_4_PIN_CLK   GPIO_PIN_17
+    #define LCD_SPI_HARD_4_PIN_DAT   GPIO_PIN_19
     /* cs/dc pin, software controlled */
-    #define LCD_SPI_HARD_4_PIN_CS   GPIO_PIN_14
-    #define LCD_SPI_HARD_4_PIN_DC   GPIO_PIN_16
+    #define LCD_SPI_HARD_4_PIN_CS   GPIO_PIN_18
+    #define LCD_SPI_HARD_4_PIN_DC   GPIO_PIN_20
 
 #endif
 
@@ -519,7 +547,7 @@
 #if (defined(LCD_RESET_EN) && LCD_RESET_EN)
 
 /* lcd reset signal pin, please leave blank if not needed */
-#define LCD_RESET_PIN GPIO_PIN_12
+#define LCD_RESET_PIN GPIO_PIN_16
 
 /* lcd reset signal active level
     0: lcd reset at low level

@@ -21,6 +21,8 @@
  *
  *
  */
+#include <FreeRTOS.h>
+#include "semphr.h"
 #include "board.h"
 #include "bflb_gpio.h"
 #include "bflb_l1c.h"
@@ -36,21 +38,19 @@
 
 #include "lcd.h"
 
-/* lvgl log cb */
-void lv_log_print_g_cb(const char *buf)
-{
-    printf("[LVGL] %s", buf);
-}
+static TaskHandle_t lvgl_handle;
 
-int main(void)
+static void lvgl_task(void *pvParameters)
 {
-    board_init();
-
     printf("lvgl case\r\n");
 
     /* lvgl init */
-    lv_log_register_print_cb(lv_log_print_g_cb);
     lv_init();
+
+    lv_tick_set_cb(xTaskGetTickCount);
+
+    lv_delay_set_cb(vTaskDelay);
+
     lv_port_disp_init();
     // lv_port_indev_init();
 
@@ -62,7 +62,20 @@ int main(void)
     printf("lvgl success\r\n");
 
     while (1) {
-        lv_task_handler();
-        bflb_mtimer_delay_ms(1);
+        uint32_t time_till_next = lv_timer_handler();
+        vTaskDelay(time_till_next);
+    }
+
+    vTaskDelete(NULL);
+}
+
+int main(void)
+{
+    board_init();
+
+    xTaskCreate(lvgl_task, (char *)"lvgl_task", 4096 * 2, NULL, configMAX_PRIORITIES, &lvgl_handle);
+
+    vTaskStartScheduler();
+    while (1) {
     }
 }
