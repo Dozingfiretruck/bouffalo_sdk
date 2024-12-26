@@ -13,8 +13,10 @@
 - C use`gnu11` build
 - C++ use`gnu++11` build
 - Compiling thread items can be independently controlled no more than modifying the SDK
-- littlefs update to 2.9.3
-- CherryUSB update to 1.4.1
+- `littlefs` update to 2.9.3
+- `CherryUSB` update to 1.4.2
+- `cjson` update 1.7.18
+- `mbedlts` update 3.6.2
 
 # Introduction
 
