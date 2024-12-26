@@ -1,15 +1,9 @@
 {
-    "files.associations": {
-        "bflb_mtimer.h": "c",
-        "usbd_core.h": "c",
-        "usb_v2_reg.h": "c",
-        "atomic.h": "c"
-    },
     "bouffalo_sdk": {
         "chip": "bl616",
         "board": "bl616dk",
         "project_dir": "${workspaceFolder}/examples/helloworld",
-        "comx": "COM5"
+        "comx": "/dev/ttyACM0"
     },
 
     "VsCodeTaskButtons.showCounter": true,
