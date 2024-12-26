@@ -7,10 +7,10 @@
             "command": "make",
             "args": [
                 "ninja",
-                "CHIP=bl616",
-                "BOARD=bl616dk",
+                "CHIP=${config:bouffalo_sdk.chip}",
+                "BOARD=${config:bouffalo_sdk.board}",
                 "-C",
-                "${workspaceFolder}/examples/helloworld"
+                "${config:bouffalo_sdk.project_dir}"
             ],
             "group": {
                 "kind": "build",
@@ -28,7 +28,7 @@
             "args": [
                 "clean",
                 "-C",
-                "${workspaceFolder}/examples/helloworld"
+                "${config:bouffalo_sdk.project_dir}"
             ],
             "group": {
                 "kind": "build",
@@ -38,16 +38,17 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
-        }
+        },
         {
             "label": "flash",
             "type": "shell",
             "command": "make",
             "args": [
                 "flash",
-                "CHIP=bl616",
+                "CHIP=${config:bouffalo_sdk.chip}",
+                "COMX=${config:bouffalo_sdk.comx}",
                 "-C",
-                "${workspaceFolder}/examples/helloworld"
+                "${config:bouffalo_sdk.project_dir}"
             ],
             "group": {
                 "kind": "build",
