@@ -1,0 +1,70 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "ninja",
+                "CHIP=bl616",
+                "BOARD=bl616dk",
+                "-C",
+                "${workspaceFolder}/examples/helloworld"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean",
+                "-C",
+                "${workspaceFolder}/examples/helloworld"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        }
+        {
+            "label": "flash",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "flash",
+                "CHIP=bl616",
+                "-C",
+                "${workspaceFolder}/examples/helloworld"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+    ],
+    // "inputs": [
+    //     {
+    //         "id": "bl616",
+    //         "type": "pickString",
+            
+
+    //     },
+    // ]
+}
