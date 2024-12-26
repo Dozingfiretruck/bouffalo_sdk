@@ -2,6 +2,3 @@
 	path = components/usb/cherryusb
 	url = https://github.com/cherry-embedded/CherryUSB
     tag = v1.4.1
-[submodule "components/os/freertos/posix"]
-	path = components/os/freertos/posix
-	url = https://github.com/FreeRTOS/Lab-Project-FreeRTOS-POSIX.git
