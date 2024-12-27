@@ -2,8 +2,12 @@
     "bouffalo_sdk": {
         "chip": "bl616",
         "board": "bl616dk",
-        "project_dir": "${workspaceFolder}/examples/helloworld",
-        "comx": "/dev/ttyACM0"
+        "project_name": "helloworld",
+        "project_dir": "${workspaceFolder}/examples/${config:bouffalo_sdk.project_name}",
+        "comx": "COM10",
+        "toolchain_path": "F:",
+        "debugger_port": "1025",
+
     },
 
     "VsCodeTaskButtons.showCounter": true,

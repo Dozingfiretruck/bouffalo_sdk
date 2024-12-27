@@ -5,16 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) 启动",
+            "name": "Bouffalo Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "输入程序名称，例如 ${workspaceFolder}/a.out",
+            "program": "${config:bouffalo_sdk.project_dir}/build/build_out/${config:bouffalo_sdk.project_name}_${config:bouffalo_sdk.chip}.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "windows": {
+                "miDebuggerPath": "${config:bouffalo_sdk.toolchain_path}/toolchain_gcc_t-head_windows/bin/riscv64-unknown-elf-gdb.exe"
+            },
+            "linux": {
+                "miDebuggerPath": "${config:bouffalo_sdk.toolchain_path}/toolchain_gcc_t-head_linux/bin/riscv64-unknown-elf-gdb"
+            },
+            "miDebuggerServerAddress": "localhost:${config:bouffalo_sdk.debugger_port}",
             "setupCommands": [
                 {
                     "description": "为 gdb 启用整齐打印",

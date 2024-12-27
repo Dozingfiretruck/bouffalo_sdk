@@ -16,7 +16,7 @@
 - `littlefs` update to 2.9.3
 - `CherryUSB` update to 1.4.2
 - `cjson` update 1.7.18
-- `mbedlts` update 3.6.2
+- `mbedlts` update 2.28.9
 
 # Introduction
 

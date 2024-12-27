@@ -17,7 +17,7 @@
 - `littlefs` 更新至 2.9.3
 - `CherryUSB` 更新至 1.4.2
 - `cjson` 更新至 1.7.18
-- `mbedlts` 更新至 3.6.2
+- `mbedlts` 更新至 2.28.9
 
 # 简介
 
