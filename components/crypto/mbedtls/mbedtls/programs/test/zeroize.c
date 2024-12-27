@@ -13,7 +13,11 @@
  *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
-#include "mbedtls/build_info.h"
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
 
 #include <stdio.h>
 
@@ -23,7 +27,7 @@
 
 #define BUFFER_LEN 1024
 
-static void usage(void)
+void usage(void)
 {
     mbedtls_printf("Zeroize is a simple program to assist with testing\n");
     mbedtls_printf("the mbedtls_platform_zeroize() function by using the\n");

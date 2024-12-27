@@ -1,6 +1,5 @@
 [MASTER]
-init-hook='import sys; sys.path.append("scripts"); sys.path.append("framework/scripts")'
-min-similarity-lines=10
+init-hook='import sys; sys.path.append("scripts")'
 
 [BASIC]
 # We're ok with short funtion argument names.

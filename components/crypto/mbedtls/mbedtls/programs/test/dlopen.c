@@ -5,7 +5,11 @@
  *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
-#include "mbedtls/build_info.h"
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
 
 #include "mbedtls/platform.h"
 
@@ -19,8 +23,7 @@
 #define SO_SUFFIX ".so"
 #endif
 
-#define MBEDCRYPTO_SO_FILENAME "libmbedcrypto" SO_SUFFIX
-#define TFPSACRYPTO_SO_FILENAME "libtfpsacrypto" SO_SUFFIX
+#define CRYPTO_SO_FILENAME "libmbedcrypto" SO_SUFFIX
 #define X509_SO_FILENAME "libmbedx509" SO_SUFFIX
 #define TLS_SO_FILENAME "libmbedtls" SO_SUFFIX
 
@@ -74,16 +77,8 @@ int main(void)
 #endif  /* MBEDTLS_X509_CRT_PARSE_C */
 
 #if defined(MBEDTLS_MD_C)
-    const char *crypto_so_filename = NULL;
-    void *crypto_so = dlopen(MBEDCRYPTO_SO_FILENAME, RTLD_NOW);
-    if (dlerror() == NULL) {
-        crypto_so_filename = MBEDCRYPTO_SO_FILENAME;
-    } else {
-        crypto_so = dlopen(TFPSACRYPTO_SO_FILENAME, RTLD_NOW);
-        CHECK_DLERROR("dlopen", TFPSACRYPTO_SO_FILENAME);
-        crypto_so_filename = TFPSACRYPTO_SO_FILENAME;
-    }
-
+    void *crypto_so = dlopen(CRYPTO_SO_FILENAME, RTLD_NOW);
+    CHECK_DLERROR("dlopen", CRYPTO_SO_FILENAME);
     const int *(*md_list)(void) =
         dlsym(crypto_so, "mbedtls_md_list");
     CHECK_DLERROR("dlsym", "mbedtls_md_list");
@@ -92,9 +87,9 @@ int main(void)
         ;
     }
     mbedtls_printf("dlopen(%s): %u hashes\n",
-                   crypto_so_filename, n);
+                   CRYPTO_SO_FILENAME, n);
     dlclose(crypto_so);
-    CHECK_DLERROR("dlclose", crypto_so_filename);
+    CHECK_DLERROR("dlclose", CRYPTO_SO_FILENAME);
 #endif  /* MBEDTLS_MD_C */
 
     return 0;

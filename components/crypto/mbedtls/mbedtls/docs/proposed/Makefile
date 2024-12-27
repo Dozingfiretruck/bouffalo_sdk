@@ -3,7 +3,6 @@ PANDOC = pandoc
 default: all
 
 all_markdown = \
-	       config-split.md \
 	       psa-conditional-inclusion-c.md \
 	       psa-driver-developer-guide.md \
 	       psa-driver-integration-guide.md \

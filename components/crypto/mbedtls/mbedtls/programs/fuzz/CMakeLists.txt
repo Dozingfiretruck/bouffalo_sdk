@@ -1,7 +1,14 @@
 set(libs
     ${mbedtls_target}
-    ${CMAKE_THREAD_LIBS_INIT}
 )
+
+if(USE_PKCS11_HELPER_LIBRARY)
+    set(libs ${libs} pkcs11-helper)
+endif(USE_PKCS11_HELPER_LIBRARY)
+
+if(ENABLE_ZLIB_SUPPORT)
+    set(libs ${libs} ${ZLIB_LIBRARIES})
+endif(ENABLE_ZLIB_SUPPORT)
 
 find_library(FUZZINGENGINE_LIB FuzzingEngine)
 if(FUZZINGENGINE_LIB)
@@ -9,29 +16,23 @@ if(FUZZINGENGINE_LIB)
 endif()
 
 set(executables_no_common_c
+    fuzz_privkey
     fuzz_pubkey
     fuzz_x509crl
     fuzz_x509crt
     fuzz_x509csr
-    fuzz_pkcs7
 )
-add_dependencies(${programs_target} ${executables_no_common_c})
 
 set(executables_with_common_c
-    fuzz_privkey
     fuzz_client
     fuzz_dtlsclient
     fuzz_dtlsserver
     fuzz_server
 )
-add_dependencies(${programs_target} ${executables_with_common_c})
 
 foreach(exe IN LISTS executables_no_common_c executables_with_common_c)
 
-    set(exe_sources
-        ${exe}.c
-        $<TARGET_OBJECTS:mbedtls_test_helpers>
-        $<TARGET_OBJECTS:mbedtls_test>)
+    set(exe_sources ${exe}.c $<TARGET_OBJECTS:mbedtls_test>)
     if(NOT FUZZINGENGINE_LIB)
         list(APPEND exe_sources onefile.c)
     endif()
@@ -43,9 +44,6 @@ foreach(exe IN LISTS executables_no_common_c executables_with_common_c)
     endif()
 
     add_executable(${exe} ${exe_sources})
-    set_base_compile_options(${exe})
-    target_include_directories(${exe} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../framework/tests/include
-                                              ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/include)
 
     if (NOT FUZZINGENGINE_LIB)
         target_link_libraries(${exe} ${libs})

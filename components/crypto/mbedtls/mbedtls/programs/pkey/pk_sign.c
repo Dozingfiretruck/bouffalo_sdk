@@ -5,28 +5,32 @@
  *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
-#include "mbedtls/build_info.h"
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
 
 #include "mbedtls/platform.h"
-/* md.h is included this early since MD_CAN_XXX macros are defined there. */
-#include "mbedtls/md.h"
 
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_ENTROPY_C) ||  \
-    !defined(PSA_WANT_ALG_SHA_256) || !defined(MBEDTLS_MD_C) || \
+    !defined(MBEDTLS_SHA256_C) || !defined(MBEDTLS_MD_C) || \
     !defined(MBEDTLS_PK_PARSE_C) || !defined(MBEDTLS_FS_IO) ||    \
     !defined(MBEDTLS_CTR_DRBG_C)
 int main(void)
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
-                   "PSA_WANT_ALG_SHA_256 and/or MBEDTLS_MD_C and/or "
+                   "MBEDTLS_SHA256_C and/or MBEDTLS_MD_C and/or "
                    "MBEDTLS_PK_PARSE_C and/or MBEDTLS_FS_IO and/or "
                    "MBEDTLS_CTR_DRBG_C not defined.\n");
     mbedtls_exit(0);
 }
 #else
 
+#include "mbedtls/error.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
+#include "mbedtls/md.h"
 #include "mbedtls/pk.h"
 
 #include <stdio.h>
@@ -83,8 +87,7 @@ int main(int argc, char *argv[])
     mbedtls_printf("\n  . Reading private key from '%s'", argv[1]);
     fflush(stdout);
 
-    if ((ret = mbedtls_pk_parse_keyfile(&pk, argv[1], "",
-                                        mbedtls_ctr_drbg_random, &ctr_drbg)) != 0) {
+    if ((ret = mbedtls_pk_parse_keyfile(&pk, argv[1], "")) != 0) {
         mbedtls_printf(" failed\n  ! Could not parse '%s'\n", argv[1]);
         goto exit;
     }
@@ -103,8 +106,7 @@ int main(int argc, char *argv[])
         goto exit;
     }
 
-    if ((ret = mbedtls_pk_sign(&pk, MBEDTLS_MD_SHA256, hash, 0,
-                               buf, sizeof(buf), &olen,
+    if ((ret = mbedtls_pk_sign(&pk, MBEDTLS_MD_SHA256, hash, 0, buf, &olen,
                                mbedtls_ctr_drbg_random, &ctr_drbg)) != 0) {
         mbedtls_printf(" failed\n  ! mbedtls_pk_sign returned -0x%04x\n", (unsigned int) -ret);
         goto exit;
@@ -142,14 +144,18 @@ exit:
 
 #if defined(MBEDTLS_ERROR_C)
     if (exit_code != MBEDTLS_EXIT_SUCCESS) {
-        mbedtls_printf("Error code: %d", ret);
-        /* mbedtls_strerror(ret, (char *) buf, sizeof(buf));
-           mbedtls_printf("  !  Last error was: %s\n", buf); */
+        mbedtls_strerror(ret, (char *) buf, sizeof(buf));
+        mbedtls_printf("  !  Last error was: %s\n", buf);
     }
+#endif
+
+#if defined(_WIN32)
+    mbedtls_printf("  + Press Enter to exit this program.\n");
+    fflush(stdout); getchar();
 #endif
 
     mbedtls_exit(exit_code);
 }
 #endif /* MBEDTLS_BIGNUM_C && MBEDTLS_ENTROPY_C &&
-          PSA_WANT_ALG_SHA_256 && MBEDTLS_PK_PARSE_C && MBEDTLS_FS_IO &&
+          MBEDTLS_SHA256_C && MBEDTLS_PK_PARSE_C && MBEDTLS_FS_IO &&
           MBEDTLS_CTR_DRBG_C */

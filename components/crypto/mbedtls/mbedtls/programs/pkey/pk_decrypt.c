@@ -5,13 +5,18 @@
  *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
-#include "mbedtls/build_info.h"
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
 
 #include "mbedtls/platform.h"
 
 #if defined(MBEDTLS_BIGNUM_C) && defined(MBEDTLS_PK_PARSE_C) && \
     defined(MBEDTLS_FS_IO) && defined(MBEDTLS_ENTROPY_C) && \
     defined(MBEDTLS_CTR_DRBG_C)
+#include "mbedtls/error.h"
 #include "mbedtls/pk.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
@@ -87,8 +92,7 @@ int main(int argc, char *argv[])
     mbedtls_printf("\n  . Reading private key from '%s'", argv[1]);
     fflush(stdout);
 
-    if ((ret = mbedtls_pk_parse_keyfile(&pk, argv[1], "",
-                                        mbedtls_ctr_drbg_random, &ctr_drbg)) != 0) {
+    if ((ret = mbedtls_pk_parse_keyfile(&pk, argv[1], "")) != 0) {
         mbedtls_printf(" failed\n  ! mbedtls_pk_parse_keyfile returned -0x%04x\n",
                        (unsigned int) -ret);
         goto exit;
@@ -141,10 +145,14 @@ exit:
 
 #if defined(MBEDTLS_ERROR_C)
     if (exit_code != MBEDTLS_EXIT_SUCCESS) {
-        mbedtls_printf("Error code: %d", ret);
-        /* mbedtls_strerror(ret, (char *) buf, sizeof(buf));
-           mbedtls_printf("  !  Last error was: %s\n", buf); */
+        mbedtls_strerror(ret, (char *) buf, sizeof(buf));
+        mbedtls_printf("  !  Last error was: %s\n", buf);
     }
+#endif
+
+#if defined(_WIN32)
+    mbedtls_printf("  + Press Enter to exit this program.\n");
+    fflush(stdout); getchar();
 #endif
 
     mbedtls_exit(exit_code);

@@ -26,21 +26,25 @@
  *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
+#define MBEDTLS_ALLOW_PRIVATE_ACCESS
 
 #include <mbedtls/debug.h>
 #include <mbedtls/platform.h>
 #include <mbedtls/platform_util.h>
 #include "test/helpers.h"
-#include "test/threading_helpers.h"
 #include "test/macros.h"
 #include "test/memory.h"
-#include "common.h"
 
 #include <stdio.h>
 #include <string.h>
 
 #if defined(MBEDTLS_THREADING_C)
 #include <mbedtls/threading.h>
+#endif
+
+/* C99 feature missing from older versions of MSVC */
+#if (defined(_MSC_VER) && (_MSC_VER <= 1900))
+#define /*no-check-names*/ __func__ __FUNCTION__
 #endif
 
 
@@ -76,13 +80,13 @@ void(*volatile do_nothing_with_object_but_the_compiler_does_not_know)(void *) =
 /* Test framework features */
 /****************************************************************/
 
-static void meta_test_fail(const char *name)
+void meta_test_fail(const char *name)
 {
     (void) name;
     mbedtls_test_fail("Forced test failure", __LINE__, __FILE__);
 }
 
-static void meta_test_not_equal(const char *name)
+void meta_test_not_equal(const char *name)
 {
     int left = 20;
     int right = 10;
@@ -94,7 +98,7 @@ exit:
     ;
 }
 
-static void meta_test_not_le_s(const char *name)
+void meta_test_not_le_s(const char *name)
 {
     int left = 20;
     int right = 10;
@@ -106,7 +110,7 @@ exit:
     ;
 }
 
-static void meta_test_not_le_u(const char *name)
+void meta_test_not_le_u(const char *name)
 {
     size_t left = 20;
     size_t right = 10;
@@ -122,16 +126,16 @@ exit:
 /* Platform features */
 /****************************************************************/
 
-static void null_pointer_dereference(const char *name)
+void null_pointer_dereference(const char *name)
 {
     (void) name;
     volatile char *volatile p;
     set_to_zero_but_the_compiler_does_not_know(&p, sizeof(p));
     /* Undefined behavior (read from null data pointer) */
-    mbedtls_printf("%p -> %u\n", (void *) p, (unsigned) *p);
+    mbedtls_printf("%p -> %u\n", p, (unsigned) *p);
 }
 
-static void null_pointer_call(const char *name)
+void null_pointer_call(const char *name)
 {
     (void) name;
     unsigned(*volatile p)(void);
@@ -148,7 +152,7 @@ static void null_pointer_call(const char *name)
 /* Memory */
 /****************************************************************/
 
-static void read_after_free(const char *name)
+void read_after_free(const char *name)
 {
     (void) name;
     volatile char *p = calloc_but_the_compiler_does_not_know(1, 1);
@@ -158,7 +162,7 @@ static void read_after_free(const char *name)
     mbedtls_printf("%u\n", (unsigned) *p);
 }
 
-static void double_free(const char *name)
+void double_free(const char *name)
 {
     (void) name;
     volatile char *p = calloc_but_the_compiler_does_not_know(1, 1);
@@ -168,7 +172,7 @@ static void double_free(const char *name)
     free_but_the_compiler_does_not_know((void *) p);
 }
 
-static void read_uninitialized_stack(const char *name)
+void read_uninitialized_stack(const char *name)
 {
     (void) name;
     char buf[1];
@@ -182,7 +186,7 @@ static void read_uninitialized_stack(const char *name)
     }
 }
 
-static void memory_leak(const char *name)
+void memory_leak(const char *name)
 {
     (void) name;
     volatile char *p = calloc_but_the_compiler_does_not_know(1, 1);
@@ -196,7 +200,7 @@ static void memory_leak(const char *name)
  * %(start), %(offset) and %(count) are decimal integers.
  * %(direction) is either the character 'r' for read or 'w' for write.
  */
-static void test_memory_poison(const char *name)
+void test_memory_poison(const char *name)
 {
     size_t start = 0, offset = 0, count = 0;
     char direction = 'r';
@@ -254,14 +258,14 @@ static void test_memory_poison(const char *name)
 /* Threading */
 /****************************************************************/
 
-static void mutex_lock_not_initialized(const char *name)
+void mutex_lock_not_initialized(const char *name)
 {
     (void) name;
 #if defined(MBEDTLS_THREADING_C)
     mbedtls_threading_mutex_t mutex;
     memset(&mutex, 0, sizeof(mutex));
     /* This mutex usage error is detected by our test framework's mutex usage
-     * verification framework. See framework/tests/src/threading_helpers.c. Other
+     * verification framework. See tests/src/threading_helpers.c. Other
      * threading implementations (e.g. pthread without our instrumentation)
      * might consider this normal usage. */
     TEST_ASSERT(mbedtls_mutex_lock(&mutex) == 0);
@@ -270,14 +274,14 @@ exit:
 #endif
 }
 
-static void mutex_unlock_not_initialized(const char *name)
+void mutex_unlock_not_initialized(const char *name)
 {
     (void) name;
 #if defined(MBEDTLS_THREADING_C)
     mbedtls_threading_mutex_t mutex;
     memset(&mutex, 0, sizeof(mutex));
     /* This mutex usage error is detected by our test framework's mutex usage
-     * verification framework. See framework/tests/src/threading_helpers.c. Other
+     * verification framework. See tests/src/threading_helpers.c. Other
      * threading implementations (e.g. pthread without our instrumentation)
      * might consider this normal usage. */
     TEST_ASSERT(mbedtls_mutex_unlock(&mutex) == 0);
@@ -286,28 +290,28 @@ exit:
 #endif
 }
 
-static void mutex_free_not_initialized(const char *name)
+void mutex_free_not_initialized(const char *name)
 {
     (void) name;
 #if defined(MBEDTLS_THREADING_C)
     mbedtls_threading_mutex_t mutex;
     memset(&mutex, 0, sizeof(mutex));
     /* This mutex usage error is detected by our test framework's mutex usage
-     * verification framework. See framework/tests/src/threading_helpers.c. Other
+     * verification framework. See tests/src/threading_helpers.c. Other
      * threading implementations (e.g. pthread without our instrumentation)
      * might consider this normal usage. */
     mbedtls_mutex_free(&mutex);
 #endif
 }
 
-static void mutex_double_init(const char *name)
+void mutex_double_init(const char *name)
 {
     (void) name;
 #if defined(MBEDTLS_THREADING_C)
     mbedtls_threading_mutex_t mutex;
     mbedtls_mutex_init(&mutex);
     /* This mutex usage error is detected by our test framework's mutex usage
-     * verification framework. See framework/tests/src/threading_helpers.c. Other
+     * verification framework. See tests/src/threading_helpers.c. Other
      * threading implementations (e.g. pthread without our instrumentation)
      * might consider this normal usage. */
     mbedtls_mutex_init(&mutex);
@@ -315,7 +319,7 @@ static void mutex_double_init(const char *name)
 #endif
 }
 
-static void mutex_double_free(const char *name)
+void mutex_double_free(const char *name)
 {
     (void) name;
 #if defined(MBEDTLS_THREADING_C)
@@ -323,14 +327,14 @@ static void mutex_double_free(const char *name)
     mbedtls_mutex_init(&mutex);
     mbedtls_mutex_free(&mutex);
     /* This mutex usage error is detected by our test framework's mutex usage
-     * verification framework. See framework/tests/src/threading_helpers.c. Other
+     * verification framework. See tests/src/threading_helpers.c. Other
      * threading implementations (e.g. pthread without our instrumentation)
      * might consider this normal usage. */
     mbedtls_mutex_free(&mutex);
 #endif
 }
 
-static void mutex_leak(const char *name)
+void mutex_leak(const char *name)
 {
     (void) name;
 #if defined(MBEDTLS_THREADING_C)
@@ -338,7 +342,7 @@ static void mutex_leak(const char *name)
     mbedtls_mutex_init(&mutex);
 #endif
     /* This mutex usage error is detected by our test framework's mutex usage
-     * verification framework. See framework/tests/src/threading_helpers.c. Other
+     * verification framework. See tests/src/threading_helpers.c. Other
      * threading implementations (e.g. pthread without our instrumentation)
      * might consider this normal usage. */
 }
@@ -361,7 +365,7 @@ typedef struct {
      * - "msan": triggers MSan (Memory Sanitizer).
      * - "pthread": requires MBEDTLS_THREADING_PTHREAD and MBEDTLS_TEST_HOOKS,
      *   which enables MBEDTLS_TEST_MUTEX_USAGE internally in the test
-     *   framework (see framework/tests/src/threading_helpers.c).
+     *   framework (see tests/src/threading_helpers.c).
      */
     const char *platform;
 
@@ -468,11 +472,9 @@ int main(int argc, char *argv[])
 #if defined(MBEDTLS_TEST_MUTEX_USAGE)
             mbedtls_test_mutex_usage_check();
 #endif
-            int result = (int) mbedtls_test_get_result();
-
             mbedtls_printf("Running metatest %s... done, result=%d\n",
-                           argv[1], result);
-            mbedtls_exit(result == MBEDTLS_TEST_RESULT_SUCCESS ?
+                           argv[1], (int) mbedtls_test_info.result);
+            mbedtls_exit(mbedtls_test_info.result == MBEDTLS_TEST_RESULT_SUCCESS ?
                          MBEDTLS_EXIT_SUCCESS :
                          MBEDTLS_EXIT_FAILURE);
         }

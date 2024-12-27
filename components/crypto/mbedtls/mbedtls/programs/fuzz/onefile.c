@@ -1,12 +1,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "common.h"
 
-/* This file doesn't use any Mbed TLS function, but grab mbedtls_config.h anyway
+/* This file doesn't use any Mbed TLS function, but grab config.h anyway
  * in case it contains platform-specific #defines related to malloc or
  * stdio functions. */
-#include "mbedtls/build_info.h"
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
+
+int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size);
 
 int main(int argc, char **argv)
 {
