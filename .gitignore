@@ -21,3 +21,4 @@ docs/zh/_static/**
 CMakeCache.txt
 CMakeFiles/
 tools/bflb_tools/bouffalo_flash_cube/chips/*/img_create
+tools/bflb_tools/bouffalo_flash_cube/*.toml
