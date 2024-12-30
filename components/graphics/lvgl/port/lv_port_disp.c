@@ -17,13 +17,13 @@
  *      DEFINES
  *********************/
 #ifndef MY_DISP_HOR_RES
-    #warning Please define or replace the macro MY_DISP_HOR_RES with the actual screen width, default value 320 is used for now.
-    #define MY_DISP_HOR_RES    LCD_H
+    // #warning Please define or replace the macro MY_DISP_HOR_RES with the actual screen width, default value 320 is used for now.
+    #define MY_DISP_HOR_RES    LCD_W
 #endif
 
 #ifndef MY_DISP_VER_RES
-    #warning Please define or replace the macro MY_DISP_VER_RES with the actual screen height, default value 240 is used for now.
-    #define MY_DISP_VER_RES    LCD_W
+    // #warning Please define or replace the macro MY_DISP_VER_RES with the actual screen height, default value 240 is used for now.
+    #define MY_DISP_VER_RES    LCD_H
 #endif
 
 #define BYTE_PER_PIXEL (LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB565)) /*will be 2 for RGB565 */
@@ -65,17 +65,17 @@ static volatile lv_display_t *p_disp_drv_cb = NULL;
 /* RGB LCD Common interface */
 
 #if 0
-static lv_color_t draw_buf_1[LCD_W * LCD_H] ATTR_EALIGN(64); /*A screen sized buffer*/
-static lv_color_t draw_buf_2[LCD_W * LCD_H] ATTR_EALIGN(64); /*An other screen sized buffer*/
+static uint8_t draw_buf_1[MY_DISP_HOR_RES * MY_DISP_VER_RES * BYTE_PER_PIXE] ATTR_EALIGN(64); /*A screen sized buffer*/
+static uint8_t draw_buf_2[MY_DISP_HOR_RES * MY_DISP_VER_RES * BYTE_PER_PIXE] ATTR_EALIGN(64); /*An other screen sized buffer*/
 
 #if RGB_TRIPLE_BUFF_MODE
-static lv_color_t draw_buf_3[LCD_W * LCD_H] ATTR_EALIGN(64); /*An other screen sized buffer*/
+static uint8_t draw_buf_3[MY_DISP_HOR_RES * MY_DISP_VER_RES * BYTE_PER_PIXE] ATTR_EALIGN(64); /*An other screen sized buffer*/
 #endif
 
 #else
 #if defined(CONFIG_PSRAM)
-static lv_color_t DRAW_BUFF_ATTR draw_buf_1[LCD_W * LCD_H];
-static lv_color_t DRAW_BUFF_ATTR draw_buf_2[LCD_W * LCD_H];
+static uint8_t DRAW_BUFF_ATTR draw_buf_1[MY_DISP_HOR_RES * MY_DISP_VER_RES / 10 * BYTE_PER_PIXEL];
+static uint8_t DRAW_BUFF_ATTR draw_buf_2[MY_DISP_HOR_RES * MY_DISP_VER_RES / 10 * BYTE_PER_PIXEL];
 #else
 #error "No config psram!"
 #endif
@@ -132,82 +132,17 @@ void lv_port_disp_init(void)
     disp_driver = lv_display_create(MY_DISP_HOR_RES, MY_DISP_VER_RES);
     lv_display_set_flush_cb(disp_driver, disp_flush);
 
-    // lv_display_set_rotation(disp_driver, LV_DISPLAY_ROTATION_90);
-
-    // /* Example 1
-    //  * One buffer for partial rendering*/
-    // LV_ATTRIBUTE_MEM_ALIGN
-    // static uint8_t buf_1_1[MY_DISP_HOR_RES * 10 * BYTE_PER_PIXEL];            /*A buffer for 10 rows*/
-    // lv_display_set_buffers(disp, buf_1_1, NULL, sizeof(buf_1_1), LV_DISPLAY_RENDER_MODE_PARTIAL);
-
-    // /* Example 2
-    //  * Two buffers for partial rendering
-    //  * In flush_cb DMA or similar hardware should be used to update the display in the background.*/
-    // LV_ATTRIBUTE_MEM_ALIGN
-    // static uint8_t buf_2_1[MY_DISP_HOR_RES * 10 * BYTE_PER_PIXEL];
-
-    // LV_ATTRIBUTE_MEM_ALIGN
-    // static uint8_t buf_2_2[MY_DISP_HOR_RES * 10 * BYTE_PER_PIXEL];
-    // lv_display_set_buffers(disp, buf_2_1, buf_2_2, sizeof(buf_2_1), LV_DISPLAY_RENDER_MODE_PARTIAL);
-
-    // /* Example 3
-    //  * Two buffers screen sized buffer for double buffering.
-    //  * Both LV_DISPLAY_RENDER_MODE_DIRECT and LV_DISPLAY_RENDER_MODE_FULL works, see their comments*/
-    // LV_ATTRIBUTE_MEM_ALIGN
-    // static uint8_t buf_3_1[MY_DISP_HOR_RES * MY_DISP_VER_RES * BYTE_PER_PIXEL];
-
-    // LV_ATTRIBUTE_MEM_ALIGN
-    // static uint8_t buf_3_2[MY_DISP_HOR_RES * MY_DISP_VER_RES * BYTE_PER_PIXEL];
-    // lv_display_set_buffers(disp, buf_3_1, buf_3_2, sizeof(buf_3_1), LV_DISPLAY_RENDER_MODE_DIRECT);
-
-
 /* MCU LCD Common interface */
 #if (LCD_INTERFACE_TYPE == LCD_INTERFACE_DBI) || (LCD_INTERFACE_TYPE == LCD_INTERFACE_SPI)
 
     lv_display_set_buffers(disp_driver, draw_buf_1, draw_buf_2, sizeof(draw_buf_2), LV_DISPLAY_RENDER_MODE_PARTIAL);
-    // lv_disp_draw_buf_init((lv_disp_draw_buf_t *)&draw_buf_dsc, draw_buf_1, draw_buf_2, LCD_W * LCD_H / 8); /*Initialize the display buffer*/
 
 /* RGB LCD Common interface,  */
 #elif (LCD_INTERFACE_TYPE == LCD_INTERFACE_DPI) || (LCD_INTERFACE_TYPE == LCD_INTERFACE_DSI_VIDIO)
 
-    lv_disp_draw_buf_init((lv_disp_draw_buf_t *)&draw_buf_dsc, draw_buf_1, draw_buf_2, LCD_W * LCD_H); /*Initialize the display buffer*/
+    lv_display_set_buffers(disp_driver, draw_buf_1, draw_buf_2, sizeof(draw_buf_2), LV_DISPLAY_RENDER_MODE_PARTIAL); /*Initialize the display buffer*/
 
 #endif
-    /*-----------------------------------
-     * Register the display in LVGL
-     *----------------------------------*/
-
-//     lv_disp_drv_init(&disp_drv_dsc); /*Basic initialization*/
-
-//     /*Set up the functions to access to your display*/
-
-//     /*Set the resolution of the display*/
-//     disp_drv_dsc.hor_res = LCD_W;
-//     disp_drv_dsc.ver_res = LCD_H;
-
-//     /* hardware rotation */
-// /* MCU LCD Common interface */
-// #if (LCD_INTERFACE_TYPE == LCD_INTERFACE_DBI) || (LCD_INTERFACE_TYPE == LCD_INTERFACE_SPI)
-//     disp_drv_dsc.sw_rotate = 0;
-
-// /* RGB LCD Common interface,  */
-// #elif (LCD_INTERFACE_TYPE == LCD_INTERFACE_DPI) || (LCD_INTERFACE_TYPE == LCD_INTERFACE_DSI_VIDIO)
-//     disp_drv_dsc.sw_rotate = 1;
-//     disp_drv_dsc.direct_mode = 1;
-//     disp_drv_dsc.full_refresh = 1;
-// #endif
-
-//     /*  rotation */
-//     disp_drv_dsc.rotated = LV_DISP_ROT_NONE;
-
-//     /*Used to copy the buffer's content to the display*/
-//     disp_drv_dsc.flush_cb = disp_flush;
-
-//     /*Set a display buffer*/
-//     disp_drv_dsc.draw_buf = (lv_disp_draw_buf_t *)&draw_buf_dsc;
-
-//     /*Finally register the driver*/
-//     lv_disp_drv_register(&disp_drv_dsc);
 }
 
 /**********************
@@ -316,6 +251,8 @@ static void disp_flush(lv_display_t * disp_drv, const lv_area_t * area, uint8_t 
         }
         p_disp_drv_cb = disp_drv;
         lcd_draw_picture_nonblocking(area->x1, area->y1, area->x2, area->y2, (lcd_color_t *)px_map);
+    }else {
+        lv_disp_flush_ready(disp_drv);
     }
 }
 
