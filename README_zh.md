@@ -18,6 +18,8 @@
 - `CherryUSB` 更新至 1.4.2
 - `cjson` 更新至 1.7.18
 - `mbedlts` 更新至 2.28.9
+- `lvgl` 更新至 9.2.2
+- `fatfs` 更新至 ff15a
 
 # 简介
 
